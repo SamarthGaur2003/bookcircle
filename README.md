@@ -1,4 +1,13 @@
 GANPATI BAPPA MORYA
+
+# ⚙️ Setup Instructions
+## Clone the repository
+git clone <repo-url>
+## Configure database in application.properties
+## Run the application
+mvn spring-boot:run
+## Test APIs using Postman
+
 # ==============================
 # SPRING BOOT - ESSENTIAL COMMANDS
 # ==============================

@@ -1,52 +1,57 @@
 package com.bookcircle.config;
 
+import java.io.IOException;
+import java.util.Collections;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.Collections;
-
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                                    throws ServletException, IOException {
-            // Get Authorization header
-            String header = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   FilterChain filterChain)
+                                   throws ServletException, IOException {
 
-            // Check header format
-            String token = null;
-            String email = null;
-            if(header!=null && header.startsWith("Bearer "))
-            {
-                token = header.substring(7);
-                email = JwtUtil.extractEmail(token); //no need of import JwtUtil due to file in same package
+        String header = request.getHeader("Authorization");
+        String token = null;
+        String email = null;
+
+        if (header != null && header.startsWith("Bearer ")) {
+            token = header.substring(7);
+            try {
+                email = JwtUtil.extractEmail(token);
+            } catch (Exception e) {
+                logger.error("Invalid JWT token: {}", e.getMessage());
             }
+        }
 
-            // If token valid → set authentication
-            if(email!=null && SecurityContextHolder.getContext().getAuthentication()==null) 
-            {
-                UsernamePasswordAuthenticationToken authtoken = new UsernamePasswordAuthenticationToken(
-                    email,        // principal (user)
-                    null,         // credentials
-                    Collections.singletonList(new SimpleGrantedAuthority("USER"))
-                );
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                SecurityContextHolder.getContext().setAuthentication(authtoken);
-            }
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            Collections.singletonList(new SimpleGrantedAuthority("USER"))
+                    );
 
-            //continue request
-            filterChain.doFilter(request, response);
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        }
+
+        filterChain.doFilter(request, response);
     }
 }

@@ -24,51 +24,70 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Check if user already exists
-    public boolean userExists(String email) {
-        logger.debug("Checking if user exists for email: {}", email);
-        return repo.findByEmail(email).isPresent();
-    }
+    // ================= REGISTER USER =================
+    public ApiResponse registerUser(Customer user) {
 
-    // Save new user with encrypted password
-    public boolean saveUser(Customer user) {
+        logger.debug("Register request for email: {}", user.getEmail());
+
+        if (repo.findByEmail(user.getEmail()).isPresent()) {
+            logger.warn("User already exists: {}", user.getEmail());
+            return new ApiResponse("exists", "User already registered", null);
+        }
+
         if (user.getPassword() == null || user.getPassword().isBlank()) {
-            logger.warn("Registration failed: password is missing for email {}", user.getEmail());
-            return false;
+            logger.warn("Password missing for email: {}", user.getEmail());
+            return new ApiResponse("error", "Password cannot be empty", null);
         }
 
         try {
-            logger.debug("Saving new user: {}", user.getEmail());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             repo.save(user);
-            logger.info("User saved successfully: {}", user.getEmail());
-            return true;
+
+            logger.info("User registered successfully: {}", user.getEmail());
+            return new ApiResponse("success", "User registered successfully", null);
+
         } catch (Exception e) {
-            logger.error("Failed to save user: {}", user.getEmail(), e);
-            return false;
+            logger.error("Error while saving user: {}", user.getEmail(), e);
+            return new ApiResponse("error", "Registration failed", null);
         }
     }
 
-    // Verify user credentials and generate JWT token
+    // ================= VERIFY USER =================
     public ApiResponse verifyUser(String email, String password) {
-        // Customer cus = repo.findByEmail(email).orElse(null);  old way
-        logger.debug("Verifying user credentials for email: {}", email);
+
+        logger.debug("Login attempt for email: {}", email);
 
         Optional<Customer> optional = repo.findByEmail(email);
+
         if (optional.isEmpty()) {
-            logger.warn("User not found during verification: {}", email);
-            return new ApiResponse("fail", "User not found");
+            logger.warn("User not found: {}", email);
+            return new ApiResponse("not_found", "User not found", null);
         }
 
         Customer customer = optional.get();
 
-        if (passwordEncoder.matches(password, customer.getPassword())) {
-            String token = JwtUtil.generateToken(email);
-            logger.info("User verified successfully and token generated: {}", email);
-            return new ApiResponse("success", token);
-        } else {
-            logger.warn("Invalid password for user: {}", email);
-            return new ApiResponse("fail", "Invalid Password");
+        if (!passwordEncoder.matches(password, customer.getPassword())) {
+            logger.warn("Invalid password for: {}", email);
+            return new ApiResponse("invalid", "Invalid password", null);
         }
+
+        try {
+            String token = JwtUtil.generateToken(email);
+
+            logger.info("Login successful for: {}", email);
+
+            // TOKEN goes inside data
+            return new ApiResponse("success", "Login successful", token);
+
+        } catch (Exception e) {
+            logger.error("Token generation failed for: {}", email, e);
+            return new ApiResponse("error", "Login failed", null);
+        }
+    }
+
+    // ================= CHECK USER EXISTS =================
+    // (kept for future use if needed)
+    public boolean userExists(String email) {
+        return repo.findByEmail(email).isPresent();
     }
 }
