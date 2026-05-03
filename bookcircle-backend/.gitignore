@@ -35,7 +35,3 @@ build/
 # Local environment secrets
 .env
 .env.local
-
-# Frontend
-node_modules/
-bookcircle-frontend/dist/
