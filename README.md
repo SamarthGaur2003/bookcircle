@@ -64,7 +64,7 @@ bookcircle/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/bookcircle.git
+git clone https://github.com/SamarthGaur2003/bookcircle.git
 cd bookcircle
 ```
 
