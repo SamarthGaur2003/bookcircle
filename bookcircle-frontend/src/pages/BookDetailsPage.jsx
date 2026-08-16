@@ -7,10 +7,13 @@ import BookMeta from '../components/books/BookMeta'
 import { Star, Info, MessageSquare, ChevronRight } from 'lucide-react'
 import BookCard from '../components/common/BookCard'
 import BookMap from '../components/maps/BookMap'
+import AiReviewSummary from '../components/books/AiReviewSummary'
 import { CONDITION_LABELS } from '../utils/constants'
 import { useToast } from '../context/ToastContext'
+import { useAuth } from '../context/AuthContext'
 
 export default function BookDetailsPage() {
+  const { user } = useAuth()
   const { id } = useParams()
   const navigate = useNavigate()
   const { pushToast } = useToast()
@@ -124,7 +127,12 @@ export default function BookDetailsPage() {
       {/* Primary Layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start', marginBottom: 64 }}>
         <BookGallery images={book.imageUrls || []} title={book.title} />
-        <BookMeta book={book} onChat={() => book.sellerId && navigate(`/chat/${book.sellerId}`)} />
+        <BookMeta 
+          book={book} 
+          isOwner={user && String(user.id) === String(book.sellerId)}
+          onChat={() => book.sellerId && navigate(`/chat/${book.sellerId}`)}
+          onEdit={() => navigate(`/edit-listing/${book.id}`)}
+        />
       </div>
 
       {/* Details Section */}
@@ -181,6 +189,9 @@ export default function BookDetailsPage() {
             </button>
           </div>
         </div>
+
+        {/* AI Review Summary */}
+        {book?.sellerId && <AiReviewSummary sellerId={book.sellerId} />}
 
         {/* Review Form */}
         {showReviewForm && (

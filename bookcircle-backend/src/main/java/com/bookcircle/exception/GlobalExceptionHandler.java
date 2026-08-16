@@ -31,6 +31,16 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse("error", errorMsg, null));
     }
 
+    // ================= LISTING REJECTED (AI Moderation) =================
+    @ExceptionHandler(ListingRejectedException.class)
+    public ResponseEntity<ApiResponse> handleListingRejected(ListingRejectedException ex) {
+
+        logger.warn("Listing rejected by AI moderation: {}", ex.getReason());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse("error", "Listing rejected: " + ex.getReason(), null));
+    }
+
     // ================= RUNTIME EXCEPTION =================
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse> handleRuntime(RuntimeException ex) {

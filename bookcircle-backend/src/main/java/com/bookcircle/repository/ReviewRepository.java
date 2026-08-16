@@ -10,4 +10,5 @@ import com.bookcircle.entity.Review;
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
     List<Review> findBySeller(Customer seller);
     boolean existsByReviewerAndSeller(Customer reviewer, Customer seller);
+    List<Review> findTop100BySellerOrderByIdDesc(Customer seller);
 }

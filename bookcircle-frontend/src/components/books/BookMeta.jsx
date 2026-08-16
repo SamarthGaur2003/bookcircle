@@ -1,9 +1,9 @@
 import React from 'react'
-import { MapPin, CalendarDays, MessageSquare, ShieldCheck } from 'lucide-react'
+import { MapPin, CalendarDays, MessageSquare, ShieldCheck, Pencil } from 'lucide-react'
 import { currency } from '../../utils/formatters'
 import { CONDITION_LABELS } from '../../utils/constants'
 
-export default function BookMeta({ book, onChat }) {
+export default function BookMeta({ book, onChat, isOwner, onEdit }) {
   return (
     <div className="glass card" style={{ padding: 28, position: 'relative', overflow: 'hidden' }}>
       {/* Background glow */}
@@ -64,12 +64,22 @@ export default function BookMeta({ book, onChat }) {
         </div>
 
         {/* CTA Button */}
-        <button className="btn" onClick={onChat} style={{
-          width: '100%', justifyContent: 'center', padding: '14px 24px',
-          fontSize: '0.95rem', borderRadius: 12, gap: 8, fontWeight: 700
-        }}>
-          <MessageSquare size={18} /> Message Seller
-        </button>
+        {isOwner ? (
+          <button className="btn-outline" onClick={onEdit} style={{
+            width: '100%', justifyContent: 'center', padding: '14px 24px',
+            fontSize: '0.95rem', borderRadius: 12, gap: 8, fontWeight: 700,
+            color: 'var(--accent)', borderColor: 'var(--accent)'
+          }}>
+            <Pencil size={18} /> Edit Your Listing
+          </button>
+        ) : (
+          <button className="btn" onClick={onChat} style={{
+            width: '100%', justifyContent: 'center', padding: '14px 24px',
+            fontSize: '0.95rem', borderRadius: 12, gap: 8, fontWeight: 700
+          }}>
+            <MessageSquare size={18} /> Message Seller
+          </button>
+        )}
       </div>
     </div>
   )

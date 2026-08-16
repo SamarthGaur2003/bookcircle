@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import { currency } from '../../utils/formatters'
 import { CONDITION_LABELS } from '../../utils/constants'
+import { motion } from 'framer-motion'
 
 export default function BookCard({ book }) {
   const cover = book.imageUrls?.[0]
 
   return (
-    <article className="book-card">
+    <motion.article 
+      className="book-card"
+      whileHover={{ y: -6, transition: { duration: 0.2 } }}
+    >
       <Link to={`/books/${book.id}`} className="card-img-wrapper" style={{ '--bg-img': cover ? `url(${cover})` : 'none' }}>
         {cover && <img src={cover} alt={book.title} loading="lazy" />}
         <div className="card-tag">{CONDITION_LABELS[book.condition] || book.condition}</div>
@@ -27,6 +31,6 @@ export default function BookCard({ book }) {
           <div className="card-price">{currency(book.price)}</div>
         </div>
       </div>
-    </article>
+    </motion.article>
   )
 }

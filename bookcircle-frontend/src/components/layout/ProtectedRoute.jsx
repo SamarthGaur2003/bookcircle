@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth()
   const location = useLocation()
 
-  // 🔥 Wait until auth is initialized
+  // Wait until authentication state is initialized
   if (loading) {
     return (
       <div style={{
@@ -20,7 +20,7 @@ export default function ProtectedRoute({ children }) {
     )
   }
 
-  // 🔐 If not authenticated → redirect
+  // Redirect to login if user is unauthenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }

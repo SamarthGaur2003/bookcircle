@@ -43,7 +43,7 @@ export default function Footer() {
             <h4 style={{ fontSize: '0.85rem', marginBottom: 12, fontWeight: 700 }}>Info</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <Link to="/about" className="muted" style={{ fontSize: '0.85rem' }}>About Us</Link>
-              <Link to="/faqs" className="muted" style={{ fontSize: '0.85rem' }}>FAQs</Link>
+              <Link to="/faq" className="muted" style={{ fontSize: '0.85rem' }}>FAQ</Link>
               <span className="muted" style={{ fontSize: '0.85rem' }}>support@bookcircle.com</span>
             </div>
           </div>

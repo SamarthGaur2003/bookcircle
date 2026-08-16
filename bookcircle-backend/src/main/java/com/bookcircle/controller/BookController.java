@@ -26,7 +26,7 @@ public class BookController {
     @Autowired
     BookService bookService;
 
-    // 🔥 UPDATED (MULTIPART)
+    // Add new book listing (multipart form data with images)
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addBook(
             @Valid @ModelAttribute BookRequest book,
@@ -39,7 +39,7 @@ public class BookController {
         );
     }
 
-    // 🔥 UPDATED (MULTIPART)
+    // Update existing book listing (multipart form data with optional images)
     @PutMapping("/update")
     public ResponseEntity<ApiResponse> updateBook(
             @RequestParam int id,
@@ -51,7 +51,6 @@ public class BookController {
         );
     }
 
-    // ❌ NO CHANGE BELOW
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getBooks() {

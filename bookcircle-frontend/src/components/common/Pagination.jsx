@@ -24,7 +24,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           key={page}
           className={page === uiPage ? 'active' : ''}
-          onClick={() => onPageChange(page - 1)}   // 🔥 FIX
+          onClick={() => onPageChange(page - 1)}
         >
           {page}
         </button>

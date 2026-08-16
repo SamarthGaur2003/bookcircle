@@ -41,12 +41,15 @@ export default function Navbar() {
 
   const navLinks = (
     <>
-      <NavLink to="/" className="nav-link" end onClick={close}>Explore</NavLink>
-      <NavLink to="/browse" className="nav-link" onClick={close}>Search</NavLink>
-      <NavLink to="/sell" className="nav-link" onClick={close}>List Book</NavLink>
+      <NavLink to="/" className="nav-link" end onClick={close}>Home</NavLink>
+      <NavLink to="/browse" className="nav-link" onClick={close}>Browse</NavLink>
+      <NavLink to="/sell" className="nav-link" onClick={close}>Sell</NavLink>
+      {isAuthenticated && (
+        <NavLink to="/my-listings" className="nav-link" onClick={close}>My Books</NavLink>
+      )}
       {isAuthenticated && (
         <NavLink to="/inbox" className="nav-link" onClick={close} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          Inbox
+          Chats
           {unreadCount > 0 && (
             <span style={{
               background: 'var(--accent)', color: '#000', fontSize: '0.65rem',
@@ -96,9 +99,9 @@ export default function Navbar() {
       <div className={`mobile-menu ${mobileOpen ? 'open' : ''}`}>
         {navLinks}
         {!isAuthenticated ? (
-          <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
-            <Link to="/login" className="btn-outline" onClick={close}>Login</Link>
-            <Link to="/register" className="btn" onClick={close}>Sign Up</Link>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+            <Link to="/login" className="btn-outline" onClick={close} style={{ textAlign: 'center' }}>Login</Link>
+            <Link to="/register" className="btn" onClick={close} style={{ textAlign: 'center' }}>Sign Up</Link>
           </div>
         ) : (
           <button className="btn-ghost" onClick={handleLogout} style={{ color: 'var(--danger)' }}>

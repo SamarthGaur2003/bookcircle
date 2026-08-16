@@ -38,6 +38,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/about" element={<AboutUsPage />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/faqs" element={<FaqPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -69,19 +69,19 @@ export default function ChatPage() {
     setConversations(prev => {
       const msgSenderId = String(msg.sender?.id);
       const currentUserId = String(user.id);
-      
+
       const otherId = msgSenderId === currentUserId ? Number(msg.receiver?.id) : Number(msg.sender?.id);
       const existing = prev.find(c => String(c.id) === String(otherId));
-      
+
       const newPreview = msg.content;
       const newTime = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
+
       if (existing) {
-        return prev.map(c => String(c.id) === String(otherId) ? { 
-          ...c, 
-          preview: newPreview, 
+        return prev.map(c => String(c.id) === String(otherId) ? {
+          ...c,
+          preview: newPreview,
           time: newTime,
-          unread: (isThisConvo || msgSenderId === currentUserId) ? c.unread : (c.unread || 0) + 1 
+          unread: (isThisConvo || msgSenderId === currentUserId) ? c.unread : (c.unread || 0) + 1
         } : c);
       } else {
         // New conversation just started
@@ -173,32 +173,32 @@ export default function ChatPage() {
       `}</style>
       <div className="chat-layout">
         <div className="chat-sidebar">
-        <ConversationList
-          conversations={conversations}
-          activeId={active?.id}
-          onSelect={setActive}
-        />
-      </div>
-      <div className="chat-main">
-        {active ? (
-          <ChatBox 
-            seller={active} 
-            key={active.id} 
-            onChatOpened={markAsRead}
-            onMessageReceived={handleMessageReceived}
-            onBack={() => setActive(null)} 
+          <ConversationList
+            conversations={conversations}
+            activeId={active?.id}
+            onSelect={setActive}
           />
-        ) : (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: '#050505', color: 'var(--muted)' }}>
-            <MessageSquare size={48} opacity={0.2} style={{ marginBottom: 16 }} />
-            <h3 style={{ color: 'var(--text)', marginBottom: 8 }}>Your Messages</h3>
-            <p style={{ maxWidth: 300, textAlign: 'center', fontSize: '0.9rem', lineHeight: 1.5 }}>
-              Select a conversation from the sidebar to view your chat history or reply to a buyer.
-            </p>
-          </div>
-        )}
+        </div>
+        <div className="chat-main">
+          {active ? (
+            <ChatBox
+              seller={active}
+              key={active.id}
+              onChatOpened={markAsRead}
+              onMessageReceived={handleMessageReceived}
+              onBack={() => setActive(null)}
+            />
+          ) : (
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: '#050505', color: 'var(--muted)' }}>
+              <MessageSquare size={48} opacity={0.2} style={{ marginBottom: 16 }} />
+              <h3 style={{ color: 'var(--text)', marginBottom: 8 }}>Your Messages</h3>
+              <p style={{ maxWidth: 300, textAlign: 'center', fontSize: '0.9rem', lineHeight: 1.5 }}>
+                Select a conversation from the sidebar to view your chat history.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </>
   )
 }

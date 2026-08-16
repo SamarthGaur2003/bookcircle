@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
   
   define: {
-    global: 'window',   // 🔥 THIS FIXES SOCKJS
+    // Polyfill global for SockJS compatibility in browser environment
+    global: 'window',
   },
   
   server: {

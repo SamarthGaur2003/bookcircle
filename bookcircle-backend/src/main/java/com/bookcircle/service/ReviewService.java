@@ -25,6 +25,9 @@ public class ReviewService {
     @Autowired
     ReviewRepository reviewRepo;
 
+    @Autowired
+    AiReviewSummaryService aiReviewSummaryService;
+
     // ================= ADD REVIEW =================
     public ApiResponse addReview(int sellerId, int rating, String comment, String reviewerEmail) {
 
@@ -35,17 +38,17 @@ public class ReviewService {
             return new ApiResponse("error", "User not found", null);
         }
 
-        // ✅ Prevent self-review
+        // Prevent self-review
         if (reviewer.getId() == seller.getId()) {
             return new ApiResponse("error", "You cannot review yourself", null);
         }
 
-        // ✅ Validate rating
+        // Validate rating range
         if (rating < 1 || rating > 5) {
             return new ApiResponse("error", "Rating must be between 1 and 5", null);
         }
 
-        // ✅ Prevent duplicate reviews
+        // Prevent duplicate reviews from the same reviewer for this seller
         if (reviewRepo.existsByReviewerAndSeller(reviewer, seller)) {
             return new ApiResponse("error", "You have already reviewed this seller", null);
         }
@@ -58,6 +61,9 @@ public class ReviewService {
             review.setSeller(seller);
 
             reviewRepo.save(review);
+
+            // Invalidate Redis cache so subsequent AI summary requests regenerate
+            aiReviewSummaryService.invalidateCache(sellerId);
 
             return new ApiResponse("success", "Review added successfully", null);
 
@@ -80,7 +86,6 @@ public class ReviewService {
 
         List<Review> reviews = reviewRepo.findBySeller(seller);
 
-        // ✅ FIX: empty = success, not error
         if (reviews.isEmpty()) {
             return new ApiResponse("success", "No reviews found", List.of());
         }
@@ -110,7 +115,6 @@ public class ReviewService {
 
         List<Review> reviews = reviewRepo.findBySeller(seller);
 
-        // ✅ FIX: empty = 0 instead of error
         if (reviews.isEmpty()) {
             return new ApiResponse("success", "No ratings available", 0.0);
         }

@@ -3,8 +3,33 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Search, TrendingUp, BookPlus } from 'lucide-react'
 import { bookService } from '../services/bookService'
 import BookCard from '../components/common/BookCard'
+import BookWelcomeAnimation from '../components/common/BookWelcomeAnimation'
+import { useAuth } from '../context/AuthContext'
+import { motion } from 'framer-motion'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  }
+}
 
 export default function HomePage() {
+  const { isAuthenticated } = useAuth()
+  const [showWelcome, setShowWelcome] = useState(false)
   const [query, setQuery] = useState('')
   const [books, setBooks] = useState([])
   const navigate = useNavigate()
@@ -26,11 +51,23 @@ export default function HomePage() {
     loadBooks()
   }, [])
 
+  useEffect(() => {
+    if (isAuthenticated && !sessionStorage.getItem('has_seen_welcome')) {
+      setShowWelcome(true)
+      sessionStorage.setItem('has_seen_welcome', 'true')
+    }
+  }, [isAuthenticated])
+
   return (
-    <div className="animate-slide-up">
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      {showWelcome && <BookWelcomeAnimation onComplete={() => setShowWelcome(false)} />}
 
       {/* Hero */}
-      <section className="hero-sec" style={{ padding: '80px 24px 60px' }}>
+      <motion.section variants={itemVariants} className="hero-sec" style={{ padding: '80px 24px 60px' }}>
         <div style={{ maxWidth: 700, width: '100%', margin: '0 auto', textAlign: 'center' }}>
           <h1 className="hero-title">Buy & Sell Books Locally</h1>
           <p className="hero-sub">
@@ -47,10 +84,10 @@ export default function HomePage() {
             <button type="submit" className="btn">Search</button>
           </form>
         </div>
-      </section>
+      </motion.section>
 
       {/* Trending / Recent Books */}
-      <div className="container" style={{ padding: '40px 24px 0' }}>
+      <motion.div variants={itemVariants} className="container" style={{ padding: '40px 24px 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
           <h2 style={{ display: 'flex', alignItems: 'center', gap: 10, margin: 0, fontSize: '1.5rem', fontWeight: 700 }}>
             <TrendingUp size={22} color="var(--accent)" /> Recently Listed
@@ -65,10 +102,10 @@ export default function HomePage() {
             No books listed yet. Be the first!
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* CTA */}
-      <div className="container" style={{ padding: '48px 24px 64px' }}>
+      <motion.div variants={itemVariants} className="container" style={{ padding: '48px 24px 64px' }}>
         <div style={{
           background: 'linear-gradient(135deg, var(--panel-strong), #000)',
           border: '1px solid var(--border)', borderRadius: 20, padding: '36px 32px',
@@ -83,7 +120,7 @@ export default function HomePage() {
             <BookPlus size={18} /> Start Selling
           </Link>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

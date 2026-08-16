@@ -6,6 +6,20 @@ import Pagination from '../components/common/Pagination'
 import { PAGE_SIZE } from '../utils/constants'
 import { Search, MapPin } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+}
 
 export default function BrowseBooksPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -44,7 +58,7 @@ export default function BrowseBooksPage() {
 
   // Fetch books
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       setLoading(true)
       setError('')
       try {
@@ -84,7 +98,7 @@ export default function BrowseBooksPage() {
           const data = await bookService.nearby({
             lat: position.coords.latitude,
             lon: position.coords.longitude,
-            radius: 50
+            radius: 5
           })
           setBooks(data)
           setPageMeta({ totalPages: 1, totalElements: data.length })
@@ -102,7 +116,13 @@ export default function BrowseBooksPage() {
   }
 
   return (
-    <div className="container animate-slide-up" style={{ paddingBottom: 80, paddingTop: 32 }}>
+    <motion.div
+      className="container animate-slide-up"
+      style={{ paddingBottom: 80, paddingTop: 32 }}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 32 }}>
         <aside>
           <FilterPanel filters={filters} setFilters={setFilters} />
@@ -154,11 +174,11 @@ export default function BrowseBooksPage() {
           ) : (
             <>
               {books.length > 0 ? (
-                <div className="grid grid-3">{books.map(book => <BookCard key={book.id} book={book} />)}</div>
+                <motion.div variants={itemVariants} className="grid grid-3">{books.map(book => <BookCard key={book.id} book={book} />)}</motion.div>
               ) : (
-                <div className="glass card" style={{ textAlign: 'center', padding: 48, color: 'var(--muted)' }}>
+                <motion.div variants={itemVariants} className="glass card" style={{ textAlign: 'center', padding: 48, color: 'var(--muted)' }}>
                   No books found. Try adjusting your filters.
-                </div>
+                </motion.div>
               )}
               {pageMeta.totalPages > 1 && (
                 <Pagination currentPage={currentPage} totalPages={pageMeta.totalPages} onPageChange={setCurrentPage} />
@@ -174,6 +194,6 @@ export default function BrowseBooksPage() {
           .container > div:first-of-type > aside > div { position: static !important; }
         }
       `}</style>
-    </div>
+    </motion.div>
   )
 }

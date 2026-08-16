@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/authService'
 import { useToast } from './ToastContext'
 
@@ -8,6 +9,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const { pushToast } = useToast()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const storedUser = localStorage.getItem('bookcircle_user')
@@ -57,8 +59,10 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('bookcircle_token')
     localStorage.removeItem('bookcircle_user')
+    sessionStorage.removeItem('has_seen_welcome')
     setUser(null)
     pushToast('success', 'Logged out')
+    navigate('/login')
   }
 
   const value = useMemo(() => ({

@@ -6,7 +6,7 @@ function normalizeBook(book) {
   return {
     ...book,
     id: String(book.id),
-    images: book.imageUrls || [],   // ✅ correct
+    images: book.imageUrls || [],
     seller: book.seller || book.user || null
   }
 }
@@ -31,12 +31,12 @@ export const bookService = {
 
   async list(params = {}) {
     const data = await api.get('/book/filter', { params })
-    return normalizePage(data)   // ✅ direct
+    return normalizePage(data)
   },
 
   async getById(id) {
     const data = await api.get(`/book/${id}`)
-    return normalizeBook(data)   // ✅ direct
+    return normalizeBook(data)
   },
 
   async create(formData) {
@@ -61,5 +61,9 @@ export const bookService = {
   async nearby({ lat, lon, radius = 5 }) {
     const data = await api.get('/book/nearby', { params: { lat, lon, radius } })
     return data.map(normalizeBook)
+  },
+
+  async delete(id) {
+    return await api.delete(`/book/delete/${id}`)
   }
 }

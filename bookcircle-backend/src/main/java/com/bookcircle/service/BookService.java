@@ -47,6 +47,9 @@ public class BookService {
     @Autowired
     GoogleGeocodingService googleGeocodingService;
 
+    @Autowired
+    ListingModerationService listingModerationService;
+
     // ========================= ADD NEW BOOK =========================
     public ApiResponse addBook(BookRequest request, List<MultipartFile> images, String email) {
         logger.debug("Adding new book: {} by {}", request.title(), request.author());
@@ -58,12 +61,15 @@ public class BookService {
             return new ApiResponse("not_found", "User not found", null);
         }
 
+        // AI Content Moderation: validates listing content before persistence
+        listingModerationService.moderate(request);
+
         try {
             BookCondition condition = parseRequiredBookCondition(request.condition());
             GeocodingResult geocodingResult = resolveCoordinates(request);
    
             List<String> imageUrls = uploadImages(images);
-            System.out.println("IMAGE URLS: " + imageUrls);
+            logger.debug("Uploaded image URLs count: {}", imageUrls.size());
 
             Book book = new Book();
             applyBookData(book, request, condition, geocodingResult, null);
@@ -204,6 +210,9 @@ public class BookService {
             return new ApiResponse("not_found", "Book not found", null);
         }
 
+        // AI Content Moderation: validates listing content before persistence
+        listingModerationService.moderate(data);
+
         try {
             Book existing = existingOpt.get();
             BookCondition condition = parseRequiredBookCondition(data.condition());
@@ -334,7 +343,7 @@ public class BookService {
     }
 
     private List<String> uploadImages(List<MultipartFile> files) {
-        System.out.println("FILES COUNT: " + files.size());
+        logger.debug("Uploading {} image file(s) to Cloudinary", files != null ? files.size() : 0);
         try {
     
             if (files == null || files.isEmpty()) {
@@ -360,7 +369,7 @@ public class BookService {
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
-            e.printStackTrace();   // 🔥 IMPORTANT
+            logger.error("Image upload failed: {}", e.getMessage(), e);
             throw new RuntimeException("Image upload failed: " + e.getMessage());
         }
     }

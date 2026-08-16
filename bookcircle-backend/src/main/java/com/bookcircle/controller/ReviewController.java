@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.bookcircle.dto.ApiResponse;
 import com.bookcircle.dto.ReviewRequest;
+import com.bookcircle.dto.ReviewSummaryResponse;
+import com.bookcircle.service.AiReviewSummaryService;
 import com.bookcircle.service.ReviewService;
 
 @RestController
@@ -15,6 +17,9 @@ public class ReviewController {
 
     @Autowired
     private ReviewService service;
+
+    @Autowired
+    private AiReviewSummaryService aiReviewSummaryService;
 
     // ================= ADD REVIEW =================
     @PostMapping("/add")
@@ -43,5 +48,12 @@ public class ReviewController {
     @GetMapping("/seller/{id}/average")
     public ResponseEntity<ApiResponse> getAvg(@PathVariable int id) {
         return ResponseEntity.ok(service.getAverageRating(id));
+    }
+
+    // ================= GET AI REVIEW SUMMARY =================
+    @GetMapping("/seller/{id}/summary")
+    public ResponseEntity<ApiResponse> getReviewSummary(@PathVariable int id) {
+        ReviewSummaryResponse summary = aiReviewSummaryService.getSellerSummary(id);
+        return ResponseEntity.ok(new ApiResponse("success", "Review summary fetched", summary));
     }
 }

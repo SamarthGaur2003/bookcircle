@@ -110,9 +110,6 @@ export default function ChatBox({ seller, onMessageReceived, onChatOpened }) {
         </div>
         <div>
           <div style={{ fontWeight: 700, fontSize: '0.9rem', lineHeight: 1.3 }}>{seller?.name || 'User'}</div>
-          <div style={{ fontSize: '0.7rem', color: connected ? 'var(--success)' : 'var(--muted)', lineHeight: 1.3 }}>
-            {connected ? 'Online' : 'Offline'}
-          </div>
         </div>
       </div>
 

@@ -24,7 +24,7 @@ export const createStompClient = ({ onConnect, onDisconnect, onMessage }) => {
   client.onConnect = () => {
     onConnect?.()
 
-    // 🔥 Subscribe to user-specific topic (better)
+    // Subscribe to user-specific message queue
     client.subscribe('/user/queue/messages', (frame) => {
       try {
         const data = JSON.parse(frame.body)
