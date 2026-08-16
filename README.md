@@ -6,36 +6,37 @@ BookCircle is a full-stack **Peer-to-Peer Book Trading Platform** built with **S
 
 ## 🚀 Features
 
-- 🔐 JWT-based Authentication & Authorization
-- 📚 Book Listing, Search & Filtering
-- 📍 Nearby Book Discovery (5 km Radius)
-- 💬 Real-time Buyer–Seller Chat (WebSocket + STOMP)
-- ☁️ Cloudinary Image Upload
-- 🗺️ Google Maps Integration
-- 📱 Responsive React UI
+- 🔐 **JWT Authentication & Authorization**: Secure stateless auth with custom security filters.
+- 🤖 **AI-Powered Content Moderation**: Analyzes listings in real time using Google Gemini to filter out spam, scams, and policy violations before database persistence (with fail-open resilience).
+- 🧠 **AI Review Summaries**: Synthesizes buyer feedback into concise seller summaries using Google Gemini, cached via Redis for ultra-low latency and minimal API overhead.
+- ⚡ **Redis Caching**: Efficient `@Cacheable` and event-driven `@CacheEvict` caching for high performance.
+- 📚 **Book Listing, Search & Multi-criteria Filtering**: Keyword, condition, price range, and location-based filtering with database pagination.
+- 📍 **Nearby Book Discovery**: Geospatial distance calculation with Google Maps Geocoding API.
+- 💬 **Real-time Chat**: WebSocket with STOMP protocol and SockJS for instant buyer-seller messaging.
+- ☁️ **Cloudinary Media Storage**: Multi-image upload and cloud asset management.
+- 📱 **Modern Reactive UI**: Built with React, Framer Motion animations, Lucide icons, and responsive design.
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- Java 21
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- JWT Authentication
-- PostgreSQL
-- WebSocket (STOMP)
-- Cloudinary
+- Java 21 / Spring Boot 3
+- Spring Security & JWT
+- Spring Data JPA & Hibernate
+- Spring Data Redis & Spring Cache
+- Google Gemini AI API
+- Google Maps Geocoding API
+- PostgreSQL / Neon Cloud DB
+- WebSocket (STOMP / SockJS)
+- Cloudinary Java SDK
 
 ### Frontend
-- React.js
-- Vite
-- Tailwind CSS
-- React Router
-- Axios
-- Google Maps API
-- SockJS & STOMP
+- React 18 & Vite
+- Framer Motion (micro-interactions & page transitions)
+- Lucide React Icons
+- Axios (centralized interceptors)
+- SockJS & STOMP Client
 
 ---
 
@@ -86,23 +87,25 @@ npm run dev
 ---
 
 ## 🔑 Environment Variables
-
-### Backend
+ 
+### Backend (`bookcircle-backend/.env`)
 
 ```env
-SPRING_DATASOURCE_URL=
-SPRING_DATASOURCE_USERNAME=
-SPRING_DATASOURCE_PASSWORD=
-JWT_SECRET=
-CLOUDINARY_URL=
+DB_URL=jdbc:postgresql://localhost:5432/bookcircle
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+CLOUDINARY_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_SECRET_KEY=your_cloudinary_api_secret
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
-### Frontend
+### Frontend (`bookcircle-frontend/.env`)
 
 ```env
-VITE_API_BASE_URL=
-VITE_WS_URL=
-VITE_GOOGLE_MAPS_API_KEY=
+VITE_API_BASE_URL=http://localhost:8080/api
+VITE_WS_URL=http://localhost:8080/ws
 ```
 
 ---
