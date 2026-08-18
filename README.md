@@ -4,6 +4,15 @@ BookCircle is a full-stack **Peer-to-Peer Book Trading Platform** built with **S
 
 ---
 
+## 🌐 Live Demo
+
+🔗 **Frontend**: [https://bookcircle-iota.vercel.app](https://bookcircle-iota.vercel.app)
+🔗 **Backend API**: [https://bookcircle-4d3q.onrender.com](https://bookcircle-4d3q.onrender.com)
+
+> ⚠️ The backend is hosted on Render's free tier and may take 30-60 seconds to wake up on first request.
+
+---
+
 ## 🚀 Features
 
 - 🔐 **JWT Authentication & Authorization**: Secure stateless auth with custom security filters.
