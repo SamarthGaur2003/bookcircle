@@ -32,11 +32,13 @@ BookCircle is a full-stack **Peer-to-Peer Book Trading Platform** built with **S
 - Cloudinary Java SDK
 
 ### Frontend
-- React 18 & Vite
-- Framer Motion (micro-interactions & page transitions)
-- Lucide React Icons
-- Axios (centralized interceptors)
-- SockJS & STOMP Client
+- React.js
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+- Google Maps API
+- SockJS & STOMP
 
 ---
 
